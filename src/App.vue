@@ -1,17 +1,35 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import AddQuestions from "./components/AddQuestions.vue";
+import Questions from "./components/Questions.vue";
 
-const questionsArr = ref<string[][]>([]);
+export type Question = {
+    question: string;
+    answer: string;
+};
 
-function addQuestion(question: string[]) {
+const questionsArr = ref<Question[]>([
+    { question: "a", answer: "a" },
+    { question: "b", answer: "b" },
+    { question: "c", answer: "c" },
+    { question: "d", answer: "d" },
+    { question: "e", answer: "e" },
+    { question: "f", answer: "f" },
+    { question: "g", answer: "g" },
+    { question: "h", answer: "h" },
+]);
+
+function addQuestion(question: Question) {
     questionsArr.value.push(question);
 }
 </script>
 
 <template>
-    <AddQuestions @addQuestion="(e: string[]) => addQuestion(e)" />
+    <AddQuestions @addQuestion="(e: Question) => addQuestion(e)" />
+    <hr />
     <p>{{ questionsArr }}</p>
+    <hr />
+    <Questions :questionsArr="questionsArr" />
 </template>
 
 <style scoped></style>

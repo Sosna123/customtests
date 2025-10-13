@@ -1,12 +1,21 @@
 <script setup lang="ts">
 import { ref, defineEmits } from "vue";
-let questionVal = ref<string>("123");
-let answerVal = ref<string>("456");
+import type { Question } from "../App.vue";
+
+let questionVal = ref<string>("");
+let answerVal = ref<string>("");
 
 const emit = defineEmits(["addQuestion"]);
 
 function emitQuestion() {
-    let value: string[] = [questionVal.value, answerVal.value];
+    if (questionVal.value.length == 0 || answerVal.value.length == 0) {
+        return;
+    }
+
+    let value: Question = {
+        question: questionVal.value,
+        answer: answerVal.value,
+    };
     emit("addQuestion", value);
 
     questionVal.value = answerVal.value = "";
@@ -16,7 +25,6 @@ function emitQuestion() {
 <template>
     <v-text-field label="question" v-model="questionVal"></v-text-field>
     <v-text-field label="answer" v-model="answerVal"></v-text-field>
-    <p>{{ questionVal }} - {{ answerVal }}</p>
     <v-btn @click="emitQuestion()">addQuestion</v-btn>
 </template>
 
