@@ -9,7 +9,6 @@ let currentQuestion = ref<string>("");
 let currentAnswer = ref<string>("");
 
 let inputedAnswer = ref<string>("");
-let wasLastCorrect = ref<boolean>(false);
 let scoreBag = ref<number>(0);
 let scoreBagAll = ref<number>(0);
 let scoreSess = ref<number>(0);
@@ -48,18 +47,15 @@ function getQuestion() {
 }
 
 function checkAnswer() {
-    if (currentAnswer.value == " " || currentAnswer.value == "") {
+    if (currentAnswer.value.trim().length == 0) {
         return;
     }
 
     if (
         currentAnswer.value.toLowerCase() == inputedAnswer.value.toLowerCase()
     ) {
-        wasLastCorrect.value = true;
         scoreBag.value++;
         scoreSess.value++;
-    } else {
-        wasLastCorrect.value = false;
     }
 
     scoreBagAll.value++;
@@ -68,26 +64,60 @@ function checkAnswer() {
     inputedAnswer.value = "";
     getQuestion();
 }
+
+// TODO if a question is added to questionarr then shuffle and getQuestion
+if (questionsBag.length > 0) {
+    getQuestion();
+}
 </script>
 
 <template>
-    <v-btn @click="getQuestion()">getquestion</v-btn>
-    <h2>{{ currentQuestion }}</h2>
-    <v-text-field
-        v-model="inputedAnswer"
-        placeholder="your answer"></v-text-field>
-    <v-btn @click="checkAnswer()">submit</v-btn>
-    <p>{{ wasLastCorrect }}</p>
-    <p>
-        This question set : {{ scoreBag }}/{{ scoreBagAll }} (~{{
-            Math.round((scoreBag / scoreBagAll) * 100)
-        }}%)
-    </p>
-    <p>
-        All questions: {{ scoreSess }}/{{ scoreSessAll }} (~{{
-            Math.round((scoreSess / scoreSessAll) * 100)
-        }}%)
-    </p>
+    <div id="content">
+        <!-- <v-btn @click="getQuestion()">getquestion</v-btn>
+        <v-btn @click="checkAnswer()">submit</v-btn> -->
+        <div id="questionParag">{{ currentQuestion.toUpperCase() }}</div>
+        <v-text-field
+            @keyup="(e: any) => {if(e.code === 'Enter') checkAnswer() }"
+            v-model="inputedAnswer"
+            placeholder="your answer"></v-text-field>
+        <div id="scoreDiv">
+            <!-- in precentages the cancelling out * 100 / 100 is for having xx.xx% -->
+            <p>
+                This question set : {{ scoreBag }}/{{ scoreBagAll }} ({{
+                    isNaN(Math.round((scoreBag / scoreBagAll) * 100))
+                        ? 0
+                        : Math.round((scoreBag / scoreBagAll) * 100 * 100) /
+                          100
+                }}%)
+            </p>
+            <p>
+                All questions: {{ scoreSess }}/{{ scoreSessAll }} ({{
+                    isNaN(Math.round((scoreSess / scoreSessAll) * 100))
+                        ? 0
+                        : Math.round((scoreSess / scoreSessAll) * 100 * 100) /
+                          100
+                }}%)
+            </p>
+        </div>
+    </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+#content {
+    padding-top: 50px;
+    margin: auto;
+    width: 50%;
+    text-align: center;
+}
+
+#scoreDiv {
+    font-style: italic;
+}
+
+#questionParag {
+    padding: 20px;
+    font-weight: normal;
+    font-size: 300%;
+    text-align: left;
+}
+</style>

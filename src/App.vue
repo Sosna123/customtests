@@ -2,11 +2,14 @@
 import { ref } from "vue";
 import AddQuestions from "./components/AddQuestions.vue";
 import Questions from "./components/Questions.vue";
+import PopupBg from "./components/PopupBg.vue";
 
 export type Question = {
     question: string;
     answer: string;
 };
+
+let showAddQuestions = ref<boolean>(false);
 
 const questionsArr = ref<Question[]>([
     { question: "a", answer: "a" },
@@ -20,16 +23,27 @@ const questionsArr = ref<Question[]>([
 ]);
 
 function addQuestion(question: Question) {
+    // TODO loop over array to check if question already exists
+    // TODO or find a better solution
     questionsArr.value.push(question);
 }
 </script>
 
 <template>
-    <AddQuestions @addQuestion="(e: Question) => addQuestion(e)" />
-    <hr />
-    <p>{{ questionsArr }}</p>
-    <hr />
+    <div v-show="showAddQuestions">
+        <AddQuestions
+            @addQuestion="(e: Question) => addQuestion(e)"
+            @exitPopup="showAddQuestions = false" />
+        <PopupBg />
+    </div>
     <Questions :questionsArr="questionsArr" />
+    <v-btn @click="showAddQuestions = true">Add a question</v-btn>
+    <!-- <p>{{ questionsArr }}</p> -->
 </template>
 
-<style scoped></style>
+<style scoped>
+/* z indexes: */
+/* website - 0? (default) */
+/* popup bg - 1 */
+/* popup content - 2 */
+</style>
