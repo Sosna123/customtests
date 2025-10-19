@@ -17,7 +17,7 @@ function deleteQuestion(remEl: Question) {
 </script>
 
 <template>
-    <div id="container">
+    <div id="container" class="bg-bg">
         <div id="content">
             <v-btn @click="emit('exitPopup')">exit</v-btn>
             <div id="list">
@@ -32,7 +32,6 @@ function deleteQuestion(remEl: Question) {
 
 <style scoped>
 #container {
-    background-color: white;
     position: absolute;
     z-index: 2;
     height: 40vh;

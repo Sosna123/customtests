@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { mdiThemeLightDark } from "@mdi/js";
+import { useTheme } from "vuetify";
+
 import AddQuestions from "./components/AddQuestions.vue";
 import Questions from "./components/Questions.vue";
 import PopupBg from "./components/PopupBg.vue";
@@ -14,6 +17,11 @@ let showAddQuestions = ref<boolean>(false);
 let showRemoveQuestions = ref<boolean>(false);
 
 let reshuffleTrigg = ref<number>(0);
+
+let theme = useTheme();
+let currTheme: boolean = true;
+// true => dark
+// false => light
 
 const questionsArr = ref<Question[]>([
     { question: "a", answer: "a" },
@@ -47,9 +55,23 @@ function removeQuestionFromArr(remEl: Question) {
         return !(el.question == remEl.question && el.answer == remEl.answer);
     });
 }
+
+function changeTheme() {
+    currTheme = !currTheme;
+
+    if (currTheme) {
+        theme.global.name.value = "dark";
+    } else {
+        theme.global.name.value = "light";
+    }
+}
 </script>
 
 <template>
+    <v-btn @click="changeTheme()" id="themeChanger">
+        <v-icon :icon="mdiThemeLightDark"></v-icon>
+    </v-btn>
+
     <div v-show="showAddQuestions">
         <AddQuestions
             @addQuestion="(e: Question) => addQuestion(e)"
@@ -94,5 +116,9 @@ function removeQuestionFromArr(remEl: Question) {
     margin: auto;
     display: flex;
     justify-content: space-evenly;
+}
+
+#themeChanger {
+    position: absolute;
 }
 </style>

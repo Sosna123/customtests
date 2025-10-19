@@ -23,7 +23,7 @@ function emitQuestion() {
 </script>
 
 <template>
-    <div id="container">
+    <div id="container" class="bg-bg">
         <div id="content">
             <v-text-field label="question" v-model="questionVal"></v-text-field>
             <v-text-field label="answer" v-model="answerVal"></v-text-field>
@@ -35,7 +35,6 @@ function emitQuestion() {
 
 <style scoped>
 #container {
-    background-color: white;
     position: absolute;
     z-index: 2;
     height: 40vh;
