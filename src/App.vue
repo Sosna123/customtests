@@ -23,16 +23,7 @@ let currTheme: boolean = true;
 // true => dark
 // false => light
 
-const questionsArr = ref<Question[]>([
-    { question: "a", answer: "a" },
-    { question: "b", answer: "b" },
-    { question: "c", answer: "c" },
-    { question: "d", answer: "d" },
-    { question: "e", answer: "e" },
-    { question: "f", answer: "f" },
-    { question: "g", answer: "g" },
-    { question: "h", answer: "h" },
-]);
+const questionsArr = ref<Question[]>([]);
 
 function saveQuestions() {
     let questionsJson: string = JSON.stringify(questionsArr.value);
@@ -60,6 +51,7 @@ function removeQuestionFromArr(remEl: Question) {
     questionsArr.value = questionsArr.value.filter((el: Question) => {
         return !(el.question == remEl.question && el.answer == remEl.answer);
     });
+    reshuffleTrigg.value++;
     saveQuestions();
 }
 

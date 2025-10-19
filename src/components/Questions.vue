@@ -41,6 +41,8 @@ function getQuestion() {
         let success: boolean = shuffleBag();
 
         if (!success) {
+            currentQuestion.value = "";
+            currentAnswer.value = "";
             return;
         }
     }
@@ -58,7 +60,7 @@ function getQuestion() {
 }
 
 function checkAnswer() {
-    if (currentAnswer.value.trim().length == 0) {
+    if (inputedAnswer.value.trim().length == 0) {
         return;
     }
 
