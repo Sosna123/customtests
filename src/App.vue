@@ -34,6 +34,11 @@ const questionsArr = ref<Question[]>([
     { question: "h", answer: "h" },
 ]);
 
+function saveQuestions() {
+    let questionsJson: string = JSON.stringify(questionsArr.value);
+    localStorage.setItem("questions", questionsJson);
+}
+
 function addQuestion(question: Question) {
     let doesExist: boolean = false;
     questionsArr.value.forEach((e) => {
@@ -48,22 +53,41 @@ function addQuestion(question: Question) {
 
     questionsArr.value.push(question);
     reshuffleTrigg.value++;
+    saveQuestions();
 }
 
 function removeQuestionFromArr(remEl: Question) {
     questionsArr.value = questionsArr.value.filter((el: Question) => {
         return !(el.question == remEl.question && el.answer == remEl.answer);
     });
+    saveQuestions();
 }
 
 function changeTheme() {
     currTheme = !currTheme;
 
     if (currTheme) {
-        theme.global.name.value = "dark";
+        theme.change("dark");
     } else {
-        theme.global.name.value = "light";
+        theme.change("light");
     }
+
+    localStorage.setItem("theme", Number(currTheme) + "");
+}
+
+// load in localStorage
+if (localStorage.getItem("theme") != undefined) {
+    // invert because changeTheme also inverts
+    currTheme = !Number(localStorage.getItem("theme"));
+    changeTheme();
+} else {
+    localStorage.setItem("theme", Number(currTheme) + "");
+}
+
+if (localStorage.getItem("questions") != undefined) {
+    questionsArr.value = JSON.parse(localStorage.getItem("questions")!);
+} else {
+    saveQuestions();
 }
 </script>
 
