@@ -3,6 +3,7 @@ import { ref } from "vue";
 import AddQuestions from "./components/AddQuestions.vue";
 import Questions from "./components/Questions.vue";
 import PopupBg from "./components/PopupBg.vue";
+import RemoveQuestions from "./components/RemoveQuestions.vue";
 
 export type Question = {
     question: string;
@@ -10,6 +11,9 @@ export type Question = {
 };
 
 let showAddQuestions = ref<boolean>(false);
+let showRemoveQuestions = ref<boolean>(false);
+
+let reshuffleTrigg = ref<number>(0);
 
 const questionsArr = ref<Question[]>([
     { question: "a", answer: "a" },
@@ -23,9 +27,25 @@ const questionsArr = ref<Question[]>([
 ]);
 
 function addQuestion(question: Question) {
-    // TODO loop over array to check if question already exists
-    // TODO or find a better solution
+    let doesExist: boolean = false;
+    questionsArr.value.forEach((e) => {
+        if (e.question == question.question && e.answer == question.answer) {
+            doesExist = true;
+        }
+    });
+
+    if (doesExist) {
+        return;
+    }
+
     questionsArr.value.push(question);
+    reshuffleTrigg.value++;
+}
+
+function removeQuestionFromArr(remEl: Question) {
+    questionsArr.value = questionsArr.value.filter((el: Question) => {
+        return !(el.question == remEl.question && el.answer == remEl.answer);
+    });
 }
 </script>
 
@@ -36,8 +56,24 @@ function addQuestion(question: Question) {
             @exitPopup="showAddQuestions = false" />
         <PopupBg />
     </div>
-    <Questions :questionsArr="questionsArr" />
-    <v-btn @click="showAddQuestions = true">Add a question</v-btn>
+
+    <div v-if="showRemoveQuestions">
+        <RemoveQuestions
+            :questionsArr="questionsArr"
+            :isOpen="showRemoveQuestions"
+            @exitPopup="showRemoveQuestions = false"
+            @removeQuestion="(e: Question) => removeQuestionFromArr(e)" />
+        <PopupBg />
+    </div>
+
+    <Questions :questionsArr="questionsArr" :reshuffleTrigg="reshuffleTrigg" />
+
+    <div id="popupBtnsContainer">
+        <div id="popupBtns">
+            <v-btn @click="showAddQuestions = true">Add a question</v-btn>
+            <v-btn @click="showRemoveQuestions = true">Remove a question</v-btn>
+        </div>
+    </div>
     <!-- <p>{{ questionsArr }}</p> -->
 </template>
 
@@ -46,4 +82,17 @@ function addQuestion(question: Question) {
 /* website - 0? (default) */
 /* popup bg - 1 */
 /* popup content - 2 */
+
+#popupBtnsContainer {
+    padding: 50px;
+    width: 100%;
+    text-align: center;
+}
+
+#popupBtns {
+    width: 40%;
+    margin: auto;
+    display: flex;
+    justify-content: space-evenly;
+}
 </style>

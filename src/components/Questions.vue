@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, defineProps } from "vue";
+import { ref, watch } from "vue";
 import type { Question } from "../App.vue";
 
-const props = defineProps(["questionsArr"]);
+const props = defineProps(["questionsArr", "reshuffleTrigg"]);
 let questionsBag: Question[] = [...props.questionsArr];
 
 let currentQuestion = ref<string>("");
@@ -14,8 +14,14 @@ let scoreBagAll = ref<number>(0);
 let scoreSess = ref<number>(0);
 let scoreSessAll = ref<number>(0);
 
-// rerandomize questions if all are "used up" (reset scores)
+// rerandomize questions if all are "used up" (and reset scores)
 function shuffleBag() {
+    console.log("shuffle");
+    if (props.questionsArr.length == 0) {
+        return false;
+    }
+
+    questionsBag = [...props.questionsArr];
     scoreBag.value = 0;
     scoreBagAll.value = 0;
 
@@ -26,12 +32,17 @@ function shuffleBag() {
         questionsBag[randomIndex] = questionsBag[i]!;
         questionsBag[i] = temp;
     }
+
+    return true;
 }
 
 function getQuestion() {
     if (questionsBag.length == 0) {
-        questionsBag = [...props.questionsArr];
-        shuffleBag();
+        let success: boolean = shuffleBag();
+
+        if (!success) {
+            return;
+        }
     }
 
     let randIndex: number = Math.round(
@@ -69,6 +80,14 @@ function checkAnswer() {
 if (questionsBag.length > 0) {
     getQuestion();
 }
+
+watch(
+    () => props.reshuffleTrigg,
+    () => {
+        shuffleBag();
+        getQuestion();
+    }
+);
 </script>
 
 <template>
@@ -77,25 +96,24 @@ if (questionsBag.length > 0) {
         <v-btn @click="checkAnswer()">submit</v-btn> -->
         <div id="questionParag">{{ currentQuestion.toUpperCase() }}</div>
         <v-text-field
-            @keyup="(e: any) => {if(e.code === 'Enter') checkAnswer() }"
+            @keyup="(e: any) => { if(e.code === 'Enter') checkAnswer() }"
             v-model="inputedAnswer"
             placeholder="your answer"></v-text-field>
         <div id="scoreDiv">
-            <!-- in precentages the cancelling out * 100 / 100 is for having xx.xx% -->
+            <!-- in precentages the cancelling out * 10 / 10 is for having xx.xx% -->
             <p>
                 This question set : {{ scoreBag }}/{{ scoreBagAll }} ({{
                     isNaN(Math.round((scoreBag / scoreBagAll) * 100))
                         ? 0
-                        : Math.round((scoreBag / scoreBagAll) * 100 * 100) /
-                          100
+                        : Math.round((scoreBag / scoreBagAll) * 100 * 10) / 10
                 }}%)
             </p>
             <p>
                 All questions: {{ scoreSess }}/{{ scoreSessAll }} ({{
                     isNaN(Math.round((scoreSess / scoreSessAll) * 100))
                         ? 0
-                        : Math.round((scoreSess / scoreSessAll) * 100 * 100) /
-                          100
+                        : Math.round((scoreSess / scoreSessAll) * 100 * 10) /
+                          10
                 }}%)
             </p>
         </div>
@@ -118,6 +136,6 @@ if (questionsBag.length > 0) {
     padding: 20px;
     font-weight: normal;
     font-size: 300%;
-    text-align: left;
+    text-align: center;
 }
 </style>
