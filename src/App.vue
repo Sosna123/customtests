@@ -112,7 +112,6 @@ if (localStorage.getItem("questions") != undefined) {
             <v-btn @click="showRemoveQuestions = true">Remove a question</v-btn>
         </div>
     </div>
-    <!-- <p>{{ questionsArr }}</p> -->
 </template>
 
 <style scoped>

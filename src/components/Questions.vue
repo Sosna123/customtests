@@ -78,7 +78,6 @@ function checkAnswer() {
     getQuestion();
 }
 
-// TODO if a question is added to questionarr then shuffle and getQuestion
 if (questionsBag.length > 0) {
     getQuestion();
 }
@@ -94,8 +93,6 @@ watch(
 
 <template>
     <div id="content">
-        <!-- <v-btn @click="getQuestion()">getquestion</v-btn>
-        <v-btn @click="checkAnswer()">submit</v-btn> -->
         <div id="questionParag">{{ currentQuestion.toUpperCase() }}</div>
         <v-text-field
             @keyup="(e: any) => { if(e.code === 'Enter') checkAnswer() }"
